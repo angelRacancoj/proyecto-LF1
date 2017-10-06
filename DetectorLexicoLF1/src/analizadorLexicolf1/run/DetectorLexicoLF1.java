@@ -1,4 +1,4 @@
-package detectorlexicolf1.run;
+package analizadorLexicolf1.run;
 
 /**
  *

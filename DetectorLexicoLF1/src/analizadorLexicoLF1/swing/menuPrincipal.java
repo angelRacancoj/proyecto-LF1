@@ -1,9 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package detectorLexicoLF1.swing;
+package analizadorLexicoLF1.swing;
+
+import analizadorLexico.Errores.ErrorLexema;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -11,10 +10,13 @@ package detectorLexicoLF1.swing;
  */
 public class menuPrincipal extends javax.swing.JFrame {
 
+    List<ErrorLexema> errores;
+
     /**
      * Creates new form menuPrincipal
      */
     public menuPrincipal() {
+        errores = new LinkedList<>();
         initComponents();
     }
 
@@ -28,7 +30,7 @@ public class menuPrincipal extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        textoTextArea = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
         erroresTable = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
@@ -47,9 +49,9 @@ public class menuPrincipal extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Detector Lexico");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        textoTextArea.setColumns(20);
+        textoTextArea.setRows(5);
+        jScrollPane1.setViewportView(textoTextArea);
 
         erroresTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -129,8 +131,6 @@ public class menuPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem abrirMenuItem;
     private javax.swing.JMenu acercaDeMenu;
@@ -144,9 +144,9 @@ public class menuPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JMenuItem nuevoMenuItem;
     private javax.swing.JLabel numeroErroresLabel;
     private javax.swing.JMenuItem pegarMenuItem;
+    private javax.swing.JTextArea textoTextArea;
     // End of variables declaration//GEN-END:variables
 }
