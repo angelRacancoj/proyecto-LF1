@@ -224,7 +224,7 @@ public class detector {
 //                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 114) && (codigoAscii != 117)) {
 //                        estado = 1;
 //                        lexema = "" + letra;
-                    } else if (validacionSimple(codigoAscii,ESPACIO)) {
+                    } else if (validacionSimple(codigoAscii, ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
@@ -234,7 +234,7 @@ public class detector {
                     break;
                 case 7:
                     //then
-                    if (validacionSimple(codigoAscii,h)) {
+                    if (validacionSimple(codigoAscii, h)) {
                         estado = 17;
                         lexema = concatenacionLetras(lexema, letra);
                         // Nos envia la estado en 'Q1'
@@ -258,7 +258,7 @@ public class detector {
                     } else if (validacionIntervaloNumero(codigoAscii)) {
                         estado = 8;
                         lexema = concatenacionLetras(lexema, letra);
-                    } else if (validacionSimple(codigoAscii,ESPACIO)) {
+                    } else if (validacionSimple(codigoAscii, ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
@@ -269,521 +269,441 @@ public class detector {
                 case 9:
                     //numero negativo
                     //nos envia a 'Q8'
-                    if (codigoAscii >= 48 && codigoAscii <= 57) {
+                    if (validacionIntervaloNumero(codigoAscii)) {
                         estado = 8;
                         lexema = "" + letra;
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 10:
                     //String
-                    if (codigoAscii == 34) {
+                    if (validacionSimple(codigoAscii, COMILLA)) {
                         estado = 19;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                         // Nos envia a las variables en 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95) || (codigoAscii == 46))) {
-                        estado = 9;
-                        lexema = "" + letra;
+                    } else if ((validacionIntervaloLetra(codigoAscii) || validacionIntervaloNumero(codigoAscii)
+                            || validacionSimple(codigoAscii, GUION) || validacionSimple(codigoAscii, GUION_BAJO) || validacionSimple(codigoAscii, PUNTO))) {
+                        estado = 10;
+                        lexema = concatenacionLetras(lexema, letra);
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 11:
                     //class
-                    if (codigoAscii == 97) {
+                    if (validacionSimple(codigoAscii, a)) {
                         estado = 20;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                         // Nos envia al estado 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 97)) {
+                    } else if (validacionLetraPalabraReservada(codigoAscii, a)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii, ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 12:
                     //else
-                    if (codigoAscii == 115) {
+                    if (validacionSimple(codigoAscii, s)) {
                         estado = 21;
-                        lexema = "" + letra;
-                        // Nos envia a las variables en 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 115)) {
+                        lexema = concatenacionLetras(lexema, letra);
+                        // Nos envia al estado 'Q1'
+                    } else if (validacionLetraPalabraReservada(codigoAscii, s)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii, ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 13:
                     //for
-                    if (codigoAscii == 114) {
+                    if (validacionSimple(codigoAscii, r)) {
                         estado = 22;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                         // Nos envia al estado 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 114)) {
+                    } else if (validacionLetraPalabraReservada(codigoAscii, r)) {
                         estado = 1;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                     } else if (letra == ' ') {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 14:
                     //if (estado final)
-                    if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95))) {
+                    if (validacionFinPalabraReservada(codigoAscii)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii,ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 15:
                     //private
-                    if (codigoAscii == 105) {
+                    if (validacionSimple(codigoAscii,i)) {
                         estado = 23;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                         // Nos envia al estado 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 105)) {
+                    } else if (validacionLetraPalabraReservada(codigoAscii,i)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii,ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 16:
                     //public
-                    if (codigoAscii == 98) {
+                    if (validacionSimple(codigoAscii, b)) {
                         estado = 24;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                         // Nos envia al estado 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 98)) {
+                    } else if (validacionLetraPalabraReservada(codigoAscii,b)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii,ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 17:
                     //then
-                    if (codigoAscii == 101) {
+                    if (validacionSimple(codigoAscii,e)) {
                         estado = 25;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                         // Nos envia al estado 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 101)) {
+                    } else if (validacionLetraPalabraReservada(codigoAscii,e)) {
                         estado = 1;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                     } else if (letra == ' ') {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 18:
                     //numero
-                    if (codigoAscii >= 48 && codigoAscii <= 57) {
+                    if (validacionIntervaloNumero(codigoAscii)) {
                         estado = 18;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii,ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 19:
                     //String
-                    if (letra == ' ') {
+                    if (validacionSimple(codigoAscii,ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        estado = 0;
-                        lexema = "" + letra;
-                        System.out.println("error" + lexema);
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 20:
                     //class
-                    if (codigoAscii == 115) {
+                    if (validacionSimple(codigoAscii,s)) {
                         estado = 26;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                         // Nos envia al estado 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 115)) {
+                    } else if (validacionLetraPalabraReservada(codigoAscii,s)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii,ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 21:
                     //else
-                    if (codigoAscii == 101) {
+                    if (validacionSimple(codigoAscii,e)) {
                         estado = 27;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                         // Nos envia al estado 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 101)) {
+                    } else if (validacionLetraPalabraReservada(codigoAscii,e)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii,ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 22:
                     //for (estado final)
-                    if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95))) {
+                    if (validacionFinPalabraReservada(codigoAscii)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii, ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 23:
                     //private
-                    if (codigoAscii == 118) {
+                    if (validacionSimple(codigoAscii,v)) {
                         estado = 28;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                         // Nos envia a las variables en 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 118)) {
+                    } else if (validacionLetraPalabraReservada(codigoAscii,v)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii,ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 24:
                     //public
-                    if (codigoAscii == 108) {
+                    if (validacionSimple(codigoAscii, l)) {
                         estado = 29;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                         // Nos envia al estado 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 108)) {
+                    } else if (validacionLetraPalabraReservada(codigoAscii,l)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii,ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 25:
                     //then
-                    if (codigoAscii == 110) {
+                    if (validacionSimple(codigoAscii,n)) {
                         estado = 30;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                         // Nos envia a las variables en 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 110)) {
+                    } else if (validacionLetraPalabraReservada(codigoAscii,n)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii,ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 26:
                     //class
-                    if (codigoAscii == 115) {
+                    if (validacionSimple(codigoAscii,s)) {
                         estado = 31;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                         // Nos envia al estado 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 115)) {
+                    } else if (validacionLetraPalabraReservada(codigoAscii,s)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii, ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 27:
                     //else (estado final)
-                    if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95))) {
+                    if (validacionFinPalabraReservada(codigoAscii)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii,ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 28:
                     //private
-                    if (codigoAscii == 97) {
+                    if (validacionSimple(codigoAscii,a)) {
                         estado = 32;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                         // Nos envia a las variables en 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 97)) {
+                    } else if (validacionLetraPalabraReservada(codigoAscii,a)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii,ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 29:
                     //public
-                    if (codigoAscii == 105) {
+                    if (validacionSimple(codigoAscii,i)) {
                         estado = 33;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                         // Nos envia al estado 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 105)) {
+                    } else if (validacionLetraPalabraReservada(codigoAscii, i)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii, ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 30:
                     //then (estado final)
-                    if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95))) {
+                    if (validacionFinPalabraReservada(codigoAscii)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii, ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 31:
                     //class (estado final)
-                    if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95))) {
+                    if (validacionFinPalabraReservada(codigoAscii)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii, ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 32:
-                    //X
-                    if (codigoAscii == 116) {
+                    //private
+                    if (validacionSimple(codigoAscii, t)) {
                         estado = 34;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                         // Nos envia al estado 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 116)) {
+                    } else if (validacionLetraPalabraReservada(codigoAscii, t)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii,ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 33:
                     //public
-                    if (codigoAscii == 99) {
+                    if (validacionSimple(codigoAscii, c)) {
                         estado = 35;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                         // Nos envia al estado 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 99)) {
+                    } else if (validacionLetraPalabraReservada(codigoAscii, c)) {
                         estado = 1;
                         lexema = "" + letra;
-                    } else if (letra == ' ') {
+                    } else if (validacionSimple(codigoAscii,ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 34:
                     //private
-                    if (codigoAscii == 101) {
+                    if (validacionSimple(codigoAscii,e)) {
                         estado = 36;
-                        lexema = "" + letra;
+                        lexema = concatenacionLetras(lexema, letra);
                         // Nos envia al estado 'Q1'
-                    } else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 101)) {
+                    } else if (validacionLetraPalabraReservada(codigoAscii, e)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii, ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 35:
                     //public (estado final)
-                    if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95))) {
+                    if (validacionFinPalabraReservada(codigoAscii)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii, ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case 36:
                     //private
-                    if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-                            || (codigoAscii == 45) || (codigoAscii == 95))) {
+                    if (validacionFinPalabraReservada(codigoAscii)) {
                         estado = 1;
-                        lexema = "" + letra;
-                    } else if (letra == ' ') {
+                        lexema = concatenacionLetras(lexema, letra);
+                    } else if (validacionSimple(codigoAscii, ESPACIO)) {
                         estado = 0;
                         lexema = "";
                     } else {
-                        System.out.println("Error" + letra);
-                        estado = 0;
-                        lexema = "" + letra;
-                        errores.add(new ErrorLexema(lexema, 0, 0));
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
                 case ESTADO_ERROR:
-                    if (!validacionSimple(codigoAscii, ESPACIO)) {
-                        estado = ESTADO_ERROR;
-                        lexema = concatenacionLetras(lexema, letra);
-                    } else if (validacionSimple(codigoAscii, ESPACIO)) {
+                    if (validacionSimple(codigoAscii, ESPACIO)) {
                         System.out.println("Error: " + lexema);
                         errores.add(new ErrorLexema(lexema, 0, 0));
                         estado = 0;
                         lexema = "";
+                    }else{
+                        estado = ESTADO_ERROR;
+                        lexema = concatenacionLetras(lexema, letra);
                     }
                     break;
             }
@@ -794,6 +714,11 @@ public class detector {
     private boolean validacionLetraPalabraReservada(int codigoAscii, int letraAcsii) {
         return ((validacionIntervaloLetra(codigoAscii)) || (validacionIntervaloNumero(codigoAscii))
                 || (validacionSimple(codigoAscii, GUION)) || (validacionSimple(codigoAscii, GUION_BAJO)) && (codigoAscii != letraAcsii));
+    }
+
+    private boolean validacionFinPalabraReservada(int codigoAscii) {
+        return ((validacionIntervaloLetra(codigoAscii)) || (validacionIntervaloNumero(codigoAscii))
+                || (validacionSimple(codigoAscii, GUION)) || (validacionSimple(codigoAscii, GUION_BAJO)));
     }
 
     private boolean validacionSimple(int codigoAscii, int simbolo) {
@@ -812,21 +737,21 @@ public class detector {
         lexe += letra;
         return lexe;
     }
-    
-    private void tomaDescision(int codigoAscii,int caracterAComprobar ,char letra, int estadoDestino){
+
+    private void tomaDescision(int codigoAscii, int caracterAComprobar, char letra, int estadoDestino) {
         if (validacionSimple(codigoAscii, caracterAComprobar)) {
-                        estado = estadoDestino;
-                        lexema = concatenacionLetras(lexema, letra);
-                        // Nos envia al estado 'Q1'
-                    } else if (validacionLetraPalabraReservada(codigoAscii, caracterAComprobar)) {
-                        estado = 1;
-                        lexema = concatenacionLetras(lexema, letra);
-                    } else if (validacionSimple(codigoAscii, ESPACIO)) {
-                        estado = 0;
-                        lexema = "";
-                    } else {
-                        estado = ESTADO_ERROR;
-                        lexema = concatenacionLetras(lexema, letra);
-                    }
+            estado = estadoDestino;
+            lexema = concatenacionLetras(lexema, letra);
+            // Nos envia al estado 'Q1'
+        } else if (validacionLetraPalabraReservada(codigoAscii, caracterAComprobar)) {
+            estado = 1;
+            lexema = concatenacionLetras(lexema, letra);
+        } else if (validacionSimple(codigoAscii, ESPACIO)) {
+            estado = 0;
+            lexema = "";
+        } else {
+            estado = ESTADO_ERROR;
+            lexema = concatenacionLetras(lexema, letra);
+        }
     }
 }
