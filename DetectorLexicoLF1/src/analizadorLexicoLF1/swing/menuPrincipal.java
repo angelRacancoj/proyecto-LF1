@@ -1,8 +1,14 @@
 package analizadorLexicoLF1.swing;
 
+import analizadorLexico.Archivo.ManejadorArchivo;
 import analizadorLexico.Errores.ErrorLexema;
-import java.util.LinkedList;
-import java.util.List;
+import analizadorLexicolf1.manejadoresAD.detector;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import org.jdesktop.observablecollections.ObservableCollections;
+import org.jdesktop.observablecollections.ObservableList;
 
 /**
  *
@@ -10,13 +16,21 @@ import java.util.List;
  */
 public class menuPrincipal extends javax.swing.JFrame {
 
-    List<ErrorLexema> errores;
+    private String pathTemporal;
+    private String path="";
+    private ArrayList<ErrorLexema> errores;
+    private ObservableList<ErrorLexema> listaObsErrores;
+    private detector lecturaTexto;
+    private ManejadorArchivo archivos;
 
     /**
      * Creates new form menuPrincipal
      */
     public menuPrincipal() {
-        errores = new LinkedList<>();
+        archivos = new ManejadorArchivo();
+        lecturaTexto = new detector();
+        errores = new ArrayList<>();
+        listaObsErrores = ObservableCollections.observableList(errores);
         initComponents();
     }
 
@@ -29,6 +43,7 @@ public class menuPrincipal extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         jScrollPane1 = new javax.swing.JScrollPane();
         textoTextArea = new javax.swing.JTextArea();
@@ -52,19 +67,29 @@ public class menuPrincipal extends javax.swing.JFrame {
 
         textoTextArea.setColumns(20);
         textoTextArea.setRows(5);
+        textoTextArea.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                textoTextAreaKeyPressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(textoTextArea);
 
-        erroresTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {},
-                {},
-                {},
-                {}
-            },
-            new String [] {
-
-            }
-        ));
+        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${listaObsErrores}");
+        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, erroresTable);
+        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${lexema}"));
+        columnBinding.setColumnName("Lexema");
+        columnBinding.setColumnClass(String.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${columna}"));
+        columnBinding.setColumnName("Columna");
+        columnBinding.setColumnClass(Integer.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${linea}"));
+        columnBinding.setColumnName("Linea");
+        columnBinding.setColumnClass(Integer.class);
+        columnBinding.setEditable(false);
+        bindingGroup.addBinding(jTableBinding);
+        jTableBinding.bind();
         jScrollPane2.setViewportView(erroresTable);
 
         jLabel1.setText("Errores: ");
@@ -72,6 +97,11 @@ public class menuPrincipal extends javax.swing.JFrame {
         archivoMenu.setText("Archivo");
 
         abrirMenuItem.setText("Abrir");
+        abrirMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                abrirMenuItemActionPerformed(evt);
+            }
+        });
         archivoMenu.add(abrirMenuItem);
 
         nuevoMenuItem.setText("Nuevo");
@@ -129,9 +159,48 @@ public class menuPrincipal extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        bindingGroup.bind();
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void textoTextAreaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textoTextAreaKeyPressed
+        lecturaTexto.detectorLexemas(textoTextArea.getText());
+        actualizarBusquedaObservableErrores(lecturaTexto.getErrores());
+        System.out.println("######################################################");
+    }//GEN-LAST:event_textoTextAreaKeyPressed
+
+    private void abrirMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abrirMenuItemActionPerformed
+        JFileChooser dialogo = new JFileChooser();
+        dialogo.setDialogTitle("Abrir");
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter("Archivo", "txt");
+        dialogo.setFileFilter(filtro);
+        if (dialogo.showOpenDialog(this)== JFileChooser.APPROVE_OPTION) {
+            path = dialogo.getSelectedFile().getAbsolutePath();
+            try {
+                textoTextArea.setText(archivos.lecturaArchivo(path));
+                lecturaTexto.detectorLexemas(textoTextArea.getText());
+            } catch (IOException e) {
+                
+            }
+        }
+        actualizarBusquedaObservableErrores(lecturaTexto.getErrores());
+    }//GEN-LAST:event_abrirMenuItemActionPerformed
+
+    public void actualizarBusquedaObservableErrores(ArrayList<ErrorLexema> lista){
+        this.listaObsErrores.clear();
+        this.listaObsErrores.addAll(lista);
+    }
+
+    public ObservableList<ErrorLexema> getListaObsErrores() {
+        return listaObsErrores;
+    }
+
+    public void setListaObsErrores(ObservableList<ErrorLexema> listaObsErrores) {
+        this.listaObsErrores = listaObsErrores;
+    }
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem abrirMenuItem;
     private javax.swing.JMenu acercaDeMenu;
@@ -149,5 +218,6 @@ public class menuPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel numeroErroresLabel;
     private javax.swing.JMenuItem pegarMenuItem;
     private javax.swing.JTextArea textoTextArea;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
