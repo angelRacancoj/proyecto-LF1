@@ -3,9 +3,14 @@ package analizadorLexicoLF1.swing;
 import analizadorLexico.Archivo.ManejadorArchivo;
 import analizadorLexico.Errores.ErrorLexema;
 import analizadorLexicolf1.manejadoresAD.detector;
+import java.awt.Toolkit;
+import java.awt.datatransfer.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
@@ -14,7 +19,7 @@ import org.jdesktop.observablecollections.ObservableList;
  *
  * @author angelrg
  */
-public class menuPrincipal extends javax.swing.JFrame {
+public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner{
 
     private String pathTemporal;
     private String path="";
@@ -32,6 +37,18 @@ public class menuPrincipal extends javax.swing.JFrame {
         errores = new ArrayList<>();
         listaObsErrores = ObservableCollections.observableList(errores);
         initComponents();
+        this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+    }
+    
+    public void copiar(String texto){
+        StringSelection textoSel = new StringSelection(texto);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(textoSel, this);
+    }
+    
+    public String pegar() throws UnsupportedFlavorException, IOException{
+        Clipboard portaPapeles = Toolkit.getDefaultToolkit().getSystemClipboard();
+        Transferable contenido = portaPapeles.getContents(null);
+        return ((String) contenido.getTransferData(DataFlavor.stringFlavor));
     }
 
 //    public int columna(String palabra){
@@ -59,14 +76,15 @@ public class menuPrincipal extends javax.swing.JFrame {
         editarMenu = new javax.swing.JMenu();
         pegarMenuItem = new javax.swing.JMenuItem();
         copiarMenuItem = new javax.swing.JMenuItem();
-        acercaDeMenu = new javax.swing.JMenu();
-        analizarMenu = new javax.swing.JMenu();
+        informacionMenu = new javax.swing.JMenu();
+        acercaDeMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Detector Lexico");
 
         textoTextArea.setColumns(20);
         textoTextArea.setRows(5);
+        textoTextArea.setDragEnabled(true);
         textoTextArea.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 textoTextAreaKeyPressed(evt);
@@ -105,9 +123,19 @@ public class menuPrincipal extends javax.swing.JFrame {
         archivoMenu.add(abrirMenuItem);
 
         nuevoMenuItem.setText("Nuevo");
+        nuevoMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nuevoMenuItemActionPerformed(evt);
+            }
+        });
         archivoMenu.add(nuevoMenuItem);
 
         guardarMenuItem.setText("Guardar");
+        guardarMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                guardarMenuItemActionPerformed(evt);
+            }
+        });
         archivoMenu.add(guardarMenuItem);
 
         jMenuBar1.add(archivoMenu);
@@ -115,18 +143,34 @@ public class menuPrincipal extends javax.swing.JFrame {
         editarMenu.setText("Editar");
 
         pegarMenuItem.setText("Copiar");
+        pegarMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pegarMenuItemActionPerformed(evt);
+            }
+        });
         editarMenu.add(pegarMenuItem);
 
         copiarMenuItem.setText("Pegar");
+        copiarMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                copiarMenuItemActionPerformed(evt);
+            }
+        });
         editarMenu.add(copiarMenuItem);
 
         jMenuBar1.add(editarMenu);
 
-        acercaDeMenu.setText("Acerca de");
-        jMenuBar1.add(acercaDeMenu);
+        informacionMenu.setText("Informacion");
 
-        analizarMenu.setText("analizar");
-        jMenuBar1.add(analizarMenu);
+        acercaDeMenuItem.setText("Acerca de");
+        acercaDeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                acercaDeMenuItemActionPerformed(evt);
+            }
+        });
+        informacionMenu.add(acercaDeMenuItem);
+
+        jMenuBar1.add(informacionMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -149,13 +193,13 @@ public class menuPrincipal extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(numeroErroresLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(numeroErroresLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -180,12 +224,40 @@ public class menuPrincipal extends javax.swing.JFrame {
             try {
                 textoTextArea.setText(archivos.lecturaArchivo(path));
                 lecturaTexto.detectorLexemas(textoTextArea.getText());
+                JOptionPane.showMessageDialog(this, "Archivo abierto exitosamente", "Informacion", JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException e) {
-                
+                JOptionPane.showMessageDialog(this, "No se ha abierto ningun archivo", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         actualizarBusquedaObservableErrores(lecturaTexto.getErrores());
     }//GEN-LAST:event_abrirMenuItemActionPerformed
+
+    private void nuevoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoMenuItemActionPerformed
+         GuardarNuevo();
+         JOptionPane.showMessageDialog(this, "Guardado Exitosamente", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_nuevoMenuItemActionPerformed
+
+    private void pegarMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pegarMenuItemActionPerformed
+        copiar(textoTextArea.getSelectedText());
+    }//GEN-LAST:event_pegarMenuItemActionPerformed
+
+    private void copiarMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copiarMenuItemActionPerformed
+        try {
+            textoTextArea.setText(textoTextArea.getText()+"\n"+pegar());
+        } catch (UnsupportedFlavorException | IOException ex) {
+            JOptionPane.showMessageDialog(this, "Error al copiar", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_copiarMenuItemActionPerformed
+
+    private void acercaDeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acercaDeMenuItemActionPerformed
+        JOptionPane.showMessageDialog(this, "Estudiante: Angel O. Racancoj G. \n"
+                + "Carnet: 201631547", "Acerca de", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_acercaDeMenuItemActionPerformed
+
+    private void guardarMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarMenuItemActionPerformed
+        GuardarNuevo();
+        JOptionPane.showMessageDialog(this, "Nuevo archivo creado", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_guardarMenuItemActionPerformed
 
     public void actualizarBusquedaObservableErrores(ArrayList<ErrorLexema> lista){
         this.listaObsErrores.clear();
@@ -200,16 +272,30 @@ public class menuPrincipal extends javax.swing.JFrame {
         this.listaObsErrores = listaObsErrores;
     }
     
+    public void GuardarNuevo(){
+        JFileChooser dialogo = new JFileChooser();
+        dialogo.setDialogTitle("Guardar");
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter("Archivo", "txt");
+        dialogo.setFileFilter(filtro);
+        if (dialogo.showOpenDialog(this)== JFileChooser.APPROVE_OPTION) {
+            path = dialogo.getSelectedFile().getAbsolutePath();
+            try {
+                archivos.guardarArchivo(path, textoTextArea.getText());
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "No se ha guardado el archivo", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem abrirMenuItem;
-    private javax.swing.JMenu acercaDeMenu;
-    private javax.swing.JMenu analizarMenu;
+    private javax.swing.JMenuItem acercaDeMenuItem;
     private javax.swing.JMenu archivoMenu;
     private javax.swing.JMenuItem copiarMenuItem;
     private javax.swing.JMenu editarMenu;
     private javax.swing.JTable erroresTable;
     private javax.swing.JMenuItem guardarMenuItem;
+    private javax.swing.JMenu informacionMenu;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -220,4 +306,9 @@ public class menuPrincipal extends javax.swing.JFrame {
     private javax.swing.JTextArea textoTextArea;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void lostOwnership(Clipboard clipboard, Transferable contents) {
+        //To change body of generated methods, choose Tools | Templates.
+    }
 }
