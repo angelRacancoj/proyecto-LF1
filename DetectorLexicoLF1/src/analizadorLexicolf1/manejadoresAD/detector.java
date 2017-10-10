@@ -1,6 +1,7 @@
 package analizadorLexicolf1.manejadoresAD;
 
 import analizadorLexico.Errores.ErrorLexema;
+import analizadorLexico.Lexema.Lexemas;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -52,6 +53,7 @@ public class detector {
     private int numLetras;
     private String lexema;
     ArrayList<ErrorLexema> errores = new ArrayList<>();
+    ArrayList<Lexemas> listaLexemas = new ArrayList<>();
 
     public void detectorLexemas(String textoEntrada) {
         numLetras = 0;
@@ -146,6 +148,7 @@ public class detector {
                         lexema = concatenacionLetras(lexema, letra);
                     } else if (siguientePalabra(codigoAscii, letra)) {
                         estado = 0;
+                        listaLexemas.add(new Lexemas(lexema, "Variable", newLine));
                         imprimir("Variable", lexema);
                         lexema = "";
                     } else {
@@ -186,6 +189,7 @@ public class detector {
                         estado = 1;
                         lexema = concatenacionLetras(lexema, letra);
                     } else if (siguientePalabra(codigoAscii, letra)) {
+                        listaLexemas.add(new Lexemas(lexema, "Variable", newLine));
                         estado = 0;
                         imprimir("Variable", lexema);
                         lexema = "";
@@ -211,6 +215,7 @@ public class detector {
                         estado = 8;
                         lexema = concatenacionLetras(lexema, letra);
                     } else if (siguientePalabra(codigoAscii, letra)) {
+                        listaLexemas.add(new Lexemas(lexema, "Numero", newLine));
                         estado = 0;
                         imprimir("Numero", lexema);
                         lexema = "";
@@ -293,6 +298,7 @@ public class detector {
                         estado = 18;
                         lexema = concatenacionLetras(lexema, letra);
                     } else if (siguientePalabra(codigoAscii, letra)) {
+                        listaLexemas.add(new Lexemas(lexema, "Numero", newLine));
                         estado = 0;
                         imprimir("Numero", lexema);
                         lexema = "";
@@ -307,6 +313,7 @@ public class detector {
                     //String
                     contadoresColumnas(letra);
                     if (siguientePalabra(codigoAscii, letra)) {
+                        listaLexemas.add(new Lexemas(lexema, "String", newLine));
                         estado = 0;
                         imprimir("String", lexema);
                         lexema = "";
@@ -444,6 +451,7 @@ public class detector {
             estado = 1;
             lexema = concatenacionLetras(lexema, letra);
         } else if (siguientePalabra(codigoAscii, letra)) {
+            listaLexemas.add(new Lexemas(lexema, "Variable", newLine));
             imprimir("Variable", lexema);
             estado = 0;
             lexema = "";
@@ -461,6 +469,7 @@ public class detector {
             estado = 1;
             lexema = concatenacionLetras(lexema, letra);
         } else if (siguientePalabra(codigoAscii, letra)) {
+            listaLexemas.add(new Lexemas(lexema, "Palabra Reservada", newLine));
             estado = 0;
             imprimir("Palabra Reservada", lexema);
             lexema = "";
@@ -500,4 +509,13 @@ public class detector {
     public void numeroLetrasInicial(int newColum) {
         numLetras = newColum;
     }
+
+    public ArrayList<Lexemas> getListaLexemas() {
+        return listaLexemas;
+    }
+
+    public void setListaLexemas(ArrayList<Lexemas> listaLexemas) {
+        this.listaLexemas = listaLexemas;
+    }
+    
 }

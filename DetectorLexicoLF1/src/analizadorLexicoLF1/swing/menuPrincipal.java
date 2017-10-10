@@ -2,6 +2,7 @@ package analizadorLexicoLF1.swing;
 
 import analizadorLexico.Archivo.ManejadorArchivo;
 import analizadorLexico.Errores.ErrorLexema;
+import analizadorLexico.Lexema.Lexemas;
 import analizadorLexicolf1.manejadoresAD.detector;
 import java.awt.Toolkit;
 import java.awt.datatransfer.*;
@@ -24,7 +25,9 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner 
     private String pathTemporal = "";
     private String path = "";
     private ArrayList<ErrorLexema> errores;
+    private ArrayList<Lexemas> listaLexemas;
     private ObservableList<ErrorLexema> listaObsErrores;
+    private ObservableList<Lexemas> listaObslexemas;
     private detector lecturaTexto;
     private ManejadorArchivo archivos;
 
@@ -35,7 +38,9 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner 
         archivos = new ManejadorArchivo();
         lecturaTexto = new detector();
         errores = new ArrayList<>();
+        listaLexemas = new ArrayList<>();
         listaObsErrores = ObservableCollections.observableList(errores);
+        listaObslexemas = ObservableCollections.observableList(listaLexemas);
         initComponents();
         this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
     }
@@ -68,6 +73,9 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner 
         erroresTable = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         numeroErroresLabel = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        lexemasTable = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         archivoMenu = new javax.swing.JMenu();
         abrirMenuItem = new javax.swing.JMenuItem();
@@ -111,6 +119,23 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner 
         jScrollPane2.setViewportView(erroresTable);
 
         jLabel1.setText("Errores: ");
+
+        eLProperty = org.jdesktop.beansbinding.ELProperty.create("${listaObslexemas}");
+        jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, lexemasTable);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${lexe}"));
+        columnBinding.setColumnName("Lexema");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${linea}"));
+        columnBinding.setColumnName("No. Linea");
+        columnBinding.setColumnClass(Integer.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${tipoLexe}"));
+        columnBinding.setColumnName("Tipo ");
+        columnBinding.setColumnClass(String.class);
+        bindingGroup.addBinding(jTableBinding);
+        jTableBinding.bind();
+        jScrollPane3.setViewportView(lexemasTable);
+
+        jLabel2.setText("Lexemas correctos:");
 
         archivoMenu.setText("Archivo");
 
@@ -178,28 +203,40 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner 
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 876, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(numeroErroresLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(numeroErroresLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(337, 337, 337))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(numeroErroresLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel2)
+                        .addComponent(numeroErroresLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -211,6 +248,7 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner 
     private void textoTextAreaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textoTextAreaKeyPressed
         lecturaTexto.detectorLexemas(textoTextArea.getText());
         actualizarBusquedaObservableErrores(lecturaTexto.getErrores());
+        actualizarBusquedaObservableLexemas(lecturaTexto.getListaLexemas());
         System.out.println("######################################################");
         System.err.println("\t \t path temporal" + pathTemporal);
     }//GEN-LAST:event_textoTextAreaKeyPressed
@@ -232,6 +270,7 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner 
             }
         }
         actualizarBusquedaObservableErrores(lecturaTexto.getErrores());
+        actualizarBusquedaObservableLexemas(lecturaTexto.getListaLexemas());
     }//GEN-LAST:event_abrirMenuItemActionPerformed
 
     private void nuevoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoMenuItemActionPerformed
@@ -285,13 +324,26 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner 
         this.listaObsErrores.clear();
         this.listaObsErrores.addAll(lista);
     }
+    
+    public void actualizarBusquedaObservableLexemas(ArrayList<Lexemas> lista) {
+        this.listaObslexemas.clear();
+        this.listaObslexemas.addAll(lista);
+    }
 
     public ObservableList<ErrorLexema> getListaObsErrores() {
         return listaObsErrores;
     }
-
+    
     public void setListaObsErrores(ObservableList<ErrorLexema> listaObsErrores) {
         this.listaObsErrores = listaObsErrores;
+    }
+
+    public ObservableList<Lexemas> getListaObslexemas() {
+        return listaObslexemas;
+    }
+
+    public void setListaObslexemas(ObservableList<Lexemas> listaObslexemas) {
+        this.listaObslexemas = listaObslexemas;
     }
 
     public void GuardarNuevo(String accion, String mensaje) {
@@ -319,9 +371,12 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner 
     private javax.swing.JMenuItem guardarMenuItem;
     private javax.swing.JMenu informacionMenu;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable lexemasTable;
     private javax.swing.JMenuItem nuevoMenuItem;
     private javax.swing.JLabel numeroErroresLabel;
     private javax.swing.JMenuItem pegarMenuItem;
