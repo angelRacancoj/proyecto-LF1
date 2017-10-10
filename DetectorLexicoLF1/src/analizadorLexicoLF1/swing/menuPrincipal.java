@@ -233,7 +233,10 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner{
     }//GEN-LAST:event_abrirMenuItemActionPerformed
 
     private void nuevoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoMenuItemActionPerformed
-         GuardarNuevo();
+        JOptionPane.showMessageDialog(this, "1.- Debe seleccionar la carpeta destino \n"
+                + "2.- Luego colocar el nombre del archivo agregando al final '.txt' \n"
+                + "3.- Presionar 'abrir' y su archivo sera creado", "Instrucciones para Crear", JOptionPane.INFORMATION_MESSAGE); 
+        GuardarNuevo("Nuevo", "Archivo creado exitosamente");
          JOptionPane.showMessageDialog(this, "Guardado Exitosamente", "Informacion", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_nuevoMenuItemActionPerformed
 
@@ -255,7 +258,10 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner{
     }//GEN-LAST:event_acercaDeMenuItemActionPerformed
 
     private void guardarMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarMenuItemActionPerformed
-        GuardarNuevo();
+        JOptionPane.showMessageDialog(this, "1.- Debe seleccionar la carpeta destino \n"
+                + "2.- Seleccionar el archivo que ha sido editado con terminacion '.txt' \n"
+                + "3.- Presionar 'abrir' y su archivo sera guardado", "Instrucciones para Guardar", JOptionPane.INFORMATION_MESSAGE); 
+        GuardarNuevo("Guardar","Guardado exitosamente");
         JOptionPane.showMessageDialog(this, "Nuevo archivo creado", "Informacion", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_guardarMenuItemActionPerformed
 
@@ -272,9 +278,9 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner{
         this.listaObsErrores = listaObsErrores;
     }
     
-    public void GuardarNuevo(){
+    public void GuardarNuevo(String accion, String mensaje){
         JFileChooser dialogo = new JFileChooser();
-        dialogo.setDialogTitle("Guardar");
+        dialogo.setDialogTitle(accion);
         FileNameExtensionFilter filtro = new FileNameExtensionFilter("Archivo", "txt");
         dialogo.setFileFilter(filtro);
         if (dialogo.showOpenDialog(this)== JFileChooser.APPROVE_OPTION) {
@@ -282,7 +288,7 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner{
             try {
                 archivos.guardarArchivo(path, textoTextArea.getText());
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "No se ha guardado el archivo", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
