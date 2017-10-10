@@ -19,10 +19,10 @@ import org.jdesktop.observablecollections.ObservableList;
  *
  * @author angelrg
  */
-public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner{
+public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner {
 
-    private String pathTemporal;
-    private String path="";
+    private String pathTemporal = "";
+    private String path = "";
     private ArrayList<ErrorLexema> errores;
     private ObservableList<ErrorLexema> listaObsErrores;
     private detector lecturaTexto;
@@ -39,13 +39,13 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner{
         initComponents();
         this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
     }
-    
-    public void copiar(String texto){
+
+    public void copiar(String texto) {
         StringSelection textoSel = new StringSelection(texto);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(textoSel, this);
     }
-    
-    public String pegar() throws UnsupportedFlavorException, IOException{
+
+    public String pegar() throws UnsupportedFlavorException, IOException {
         Clipboard portaPapeles = Toolkit.getDefaultToolkit().getSystemClipboard();
         Transferable contenido = portaPapeles.getContents(null);
         return ((String) contenido.getTransferData(DataFlavor.stringFlavor));
@@ -212,6 +212,7 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner{
         lecturaTexto.detectorLexemas(textoTextArea.getText());
         actualizarBusquedaObservableErrores(lecturaTexto.getErrores());
         System.out.println("######################################################");
+        System.err.println("\t \t path temporal" + pathTemporal);
     }//GEN-LAST:event_textoTextAreaKeyPressed
 
     private void abrirMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abrirMenuItemActionPerformed
@@ -219,8 +220,9 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner{
         dialogo.setDialogTitle("Abrir");
         FileNameExtensionFilter filtro = new FileNameExtensionFilter("Archivo", "txt");
         dialogo.setFileFilter(filtro);
-        if (dialogo.showOpenDialog(this)== JFileChooser.APPROVE_OPTION) {
+        if (dialogo.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             path = dialogo.getSelectedFile().getAbsolutePath();
+            pathTemporal = path;
             try {
                 textoTextArea.setText(archivos.lecturaArchivo(path));
                 lecturaTexto.detectorLexemas(textoTextArea.getText());
@@ -235,9 +237,9 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner{
     private void nuevoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoMenuItemActionPerformed
         JOptionPane.showMessageDialog(this, "1.- Debe seleccionar la carpeta destino \n"
                 + "2.- Luego colocar el nombre del archivo agregando al final '.txt' \n"
-                + "3.- Presionar 'abrir' y su archivo sera creado", "Instrucciones para Crear", JOptionPane.INFORMATION_MESSAGE); 
+                + "3.- Presionar 'abrir' y su archivo sera creado", "Instrucciones para Crear", JOptionPane.INFORMATION_MESSAGE);
         GuardarNuevo("Nuevo", "Archivo creado exitosamente");
-         JOptionPane.showMessageDialog(this, "Guardado Exitosamente", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Guardado Exitosamente", "Informacion", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_nuevoMenuItemActionPerformed
 
     private void pegarMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pegarMenuItemActionPerformed
@@ -246,7 +248,7 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner{
 
     private void copiarMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copiarMenuItemActionPerformed
         try {
-            textoTextArea.setText(textoTextArea.getText()+"\n"+pegar());
+            textoTextArea.setText(textoTextArea.getText() + "\n" + pegar());
         } catch (UnsupportedFlavorException | IOException ex) {
             JOptionPane.showMessageDialog(this, "Error al copiar", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -258,14 +260,28 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner{
     }//GEN-LAST:event_acercaDeMenuItemActionPerformed
 
     private void guardarMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarMenuItemActionPerformed
-        JOptionPane.showMessageDialog(this, "1.- Debe seleccionar la carpeta destino \n"
-                + "2.- Seleccionar el archivo que ha sido editado con terminacion '.txt' \n"
-                + "3.- Presionar 'abrir' y su archivo sera guardado", "Instrucciones para Guardar", JOptionPane.INFORMATION_MESSAGE); 
-        GuardarNuevo("Guardar","Guardado exitosamente");
-        JOptionPane.showMessageDialog(this, "Nuevo archivo creado", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+        if (pathTemporal != "") {
+            try {
+                archivos.guardarArchivo(pathTemporal, textoTextArea.getText());
+                JOptionPane.showMessageDialog(this, "Archivo guardado", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error al guardar \n"
+                        + "Contacte al Administrador xD", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            try {
+                JOptionPane.showMessageDialog(this, "1.- Debe seleccionar la carpeta destino \n"
+                        + "2.- Seleccionar el archivo que ha sido editado con terminacion '.txt' \n"
+                        + "3.- Presionar 'abrir' y su archivo sera guardado", "Instrucciones para Guardar", JOptionPane.INFORMATION_MESSAGE);
+                GuardarNuevo("Guardar", "Guardado exitosamente");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error al guardar \n"
+                        + "Contacte al Administrador xD", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_guardarMenuItemActionPerformed
 
-    public void actualizarBusquedaObservableErrores(ArrayList<ErrorLexema> lista){
+    public void actualizarBusquedaObservableErrores(ArrayList<ErrorLexema> lista) {
         this.listaObsErrores.clear();
         this.listaObsErrores.addAll(lista);
     }
@@ -277,13 +293,13 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner{
     public void setListaObsErrores(ObservableList<ErrorLexema> listaObsErrores) {
         this.listaObsErrores = listaObsErrores;
     }
-    
-    public void GuardarNuevo(String accion, String mensaje){
+
+    public void GuardarNuevo(String accion, String mensaje) {
         JFileChooser dialogo = new JFileChooser();
         dialogo.setDialogTitle(accion);
         FileNameExtensionFilter filtro = new FileNameExtensionFilter("Archivo", "txt");
         dialogo.setFileFilter(filtro);
-        if (dialogo.showOpenDialog(this)== JFileChooser.APPROVE_OPTION) {
+        if (dialogo.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             path = dialogo.getSelectedFile().getAbsolutePath();
             try {
                 archivos.guardarArchivo(path, textoTextArea.getText());
@@ -292,7 +308,7 @@ public class menuPrincipal extends javax.swing.JFrame implements ClipboardOwner{
             }
         }
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem abrirMenuItem;
     private javax.swing.JMenuItem acercaDeMenuItem;

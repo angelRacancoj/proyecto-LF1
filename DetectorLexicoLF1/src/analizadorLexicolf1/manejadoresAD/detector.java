@@ -185,11 +185,6 @@ public class detector {
                     } else if (validacionLetraPalabraReservada(codigoAscii, r) && validacionLetraPalabraReservada(codigoAscii, u)) {
                         estado = 1;
                         lexema = concatenacionLetras(lexema, letra);
-//                    }  
-//                    else if ((((codigoAscii >= 65 && codigoAscii <= 90) || (codigoAscii >= 97 && codigoAscii <= 122)) || (codigoAscii >= 48 && codigoAscii <= 57)
-//                            || (codigoAscii == 45) || (codigoAscii == 95)) && (codigoAscii != 114) && (codigoAscii != 117)) {
-//                        estado = 1;
-//                        lexema = "" + letra;
                     } else if (siguientePalabra(codigoAscii, letra)) {
                         estado = 0;
                         imprimir("Variable", lexema);
@@ -501,8 +496,8 @@ public class detector {
             newColum++;
         }
     }
-    
-    public void numeroLetrasInicial(int newColum){
-            numLetras=newColum;
+
+    public void numeroLetrasInicial(int newColum) {
+        numLetras = newColum;
     }
 }
